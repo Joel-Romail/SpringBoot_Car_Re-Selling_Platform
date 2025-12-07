@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Perekupi.lv</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    />
+
+    <style>
+      :root {
+        --bs-primary: #1e40af;
+        --bs-primary-rgb: 30, 64, 175;
+      }
+      .btn-primary {
+        --bs-btn-bg: #1e40af;
+        --bs-btn-border-color: #1e40af;
+        --bs-btn-hover-bg: #1e3a8a;
+        --bs-btn-hover-border-color: #1e3a8a;
+      }
+      .table-primary {
+        --bs-table-bg: #1e40af;
+        --bs-table-color: #fff;
+      }
+      .bg-primary-gradient {
+        background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+      }
+      .brand-logo {
+        height: 40px;
+        max-width: 80px;
+        object-fit: contain;
+      }
+      .car-thumb {
+        width: 100px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 0.5rem;
+        border: 2px solid #e2e8f0;
+      }
+      .page-link {
+        color: #1e40af;
+      }
+      .page-item.active .page-link {
+        background-color: #1e40af;
+        border-color: #1e40af;
+      }
+      .pagination-container {
+        display: none;
+      }
+
+      .actions-dropdown {
+        position: relative;
+      }
+      .actions-menu {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        z-index: 1000;
+        min-width: 200px;
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 0.375rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+      }
+      .actions-menu.show {
+        display: block;
+      }
+      .actions-menu .dropdown-item {
+        padding: 0.5rem 1rem;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+      }
+      .actions-menu .dropdown-item:hover {
+        background-color: #f8f9fa;
+      }
+      .actions-menu .dropdown-item:disabled {
+        color: #6c757d;
+        cursor: not-allowed;
+        background-color: transparent;
+      }
+      .comment-dialog {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        z-index: 1050;
+        width: 300px;
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 0.375rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        padding: 1rem;
+      }
+      .comment-dialog.show {
+        display: block;
+      }
+      .comment-textarea {
+        width: 100%;
+        min-height: 100px;
+        resize: vertical;
+        border: 1px solid #ced4da;
+        border-radius: 0.375rem;
+        padding: 0.5rem;
+      }
+      .table-row-actions {
+        position: relative;
+      }
+
+      .comment-badge {
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background-color: #1e40af !important;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        margin-right: 8px;
+      }
+      .comment-badge:hover {
+        transform: scale(1.1);
+        background-color: #1e3a8a !important;
+      }
+      .comment-badge i {
+        font-size: 16px;
+        color: white;
+      }
+      .comment-count {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: #dc3545;
+        color: white;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        font-size: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+      }
+
+      .comment-tooltip {
+        --bs-tooltip-bg: #1e40af;
+        --bs-tooltip-color: white;
+      }
+
+      .comment-popover {
+        max-width: 400px;
+        min-width: 300px;
+      }
+      .comment-popover .popover-body {
+        max-height: 300px;
+        overflow-y: auto;
+      }
+      .comment-item {
+        border-bottom: 1px solid #dee2e6;
+        padding: 0.5rem 0;
+        margin-bottom: 0.5rem;
+      }
+      .comment-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+      }
+      .comment-timestamp {
+        font-size: 0.75rem;
+        color: #6c757d;
+        margin-bottom: 0.25rem;
+      }
+      .comment-text {
+        font-size: 0.875rem;
+        line-height: 1.4;
+        word-wrap: break-word;
+      }
+      .no-comments {
+        color: #6c757d;
+        font-style: italic;
+        text-align: center;
+        padding: 1rem;
+      }
+
+      .action-buttons-container {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.3s ease;
+      }
+
+      .loading-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transform: translateY(-50px);
+      }
+
+      .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #1e40af;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-text {
+        margin-top: 15px;
+        font-weight: 500;
+        color: #1e40af;
+      }
+
+      .clear-filters-btn {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: white;
+      }
+
+      .clear-filters-btn:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+        color: white;
+      }
+
+      .refresh-countdown {
+        color: #fd7e14;
+        font-weight: bold;
+      }
+
+      .filter-actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-end;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .filter-section {
+        border-bottom: 1px solid #e9ecef;
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .filter-section:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+        margin-bottom: 0;
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <div id="loadingIndicator" class="loading-overlay">
+      <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading cars inventory...</div>
+      </div>
+    </div>
+
+    <header class="bg-white border-bottom shadow-sm sticky-top">
+      <div class="container py-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <h1 class="h4 mb-0 text-primary fw-bold">
+            <i class="bi bi-car-front-fill me-2"></i>Perekupi.lv
+          </h1>
+          <div class="text-end">
+            <div class="text-muted small mb-1">
+              <i class="bi bi-person-circle me-1"></i>Logged in as:
+              <strong th:text="${user.name}">User</strong>
+              <span th:text="'(' + ${user.company} + ')'"></span>
+            </div>
+            <a href="/logout" class="btn btn-outline-danger btn-sm"
+              ><i class="bi bi-box-arrow-right me-1"></i>Logout</a
+            >
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container py-4">
+      <div class="card mb-4 border-0 shadow-sm">
+        <div class="card-header bg-primary-gradient text-white">
+          <h5 class="mb-0"><i class="bi bi-funnel me-2"></i>Cars Inventory</h5>
+        </div>
+        <div class="card-body">
+          <form id="filterForm">
+            <div class="filter-section">
+              <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                  <label class="form-label fw-semibold mb-1">Brand</label>
+                  <select id="brandFilter" class="form-select form-select-sm">
+                    <option value="all">All Brands</option>
+                  </select>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label fw-semibold mb-1">Model</label>
+                  <select id="modelFilter" class="form-select form-select-sm">
+                    <option value="all" selected>All Models</option>
+                  </select>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label fw-semibold mb-1">Volume</label>
+                  <select id="volumeFilter" class="form-select form-select-sm">
+                    <option value="all" selected>All</option>
+                  </select>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="form-check mt-3">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="filterNew"
+                    />
+                    <label class="form-check-label small" for="filterNew"
+                      >Show only new</label
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="filter-section">
+              <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                  <label class="form-label fw-semibold mb-1">Year</label>
+                  <div class="input-group input-group-sm">
+                    <input
+                      type="number"
+                      id="yearFrom"
+                      class="form-control"
+                      placeholder="From..."
+                      min="1900"
+                    />
+                    <input
+                      type="number"
+                      id="yearTo"
+                      class="form-control"
+                      placeholder="To..."
+                      min="1900"
+                    />
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label fw-semibold mb-1">Price (€)</label>
+                  <div class="input-group input-group-sm">
+                    <input
+                      type="number"
+                      id="priceFrom"
+                      class="form-control"
+                      placeholder="From..."
+                      min="0"
+                      step="0.01"
+                    />
+                    <input
+                      type="number"
+                      id="priceTo"
+                      class="form-control"
+                      placeholder="To..."
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label fw-semibold mb-1"
+                    >Mileage (km)</label
+                  >
+                  <div class="input-group input-group-sm">
+                    <input
+                      type="number"
+                      id="mileageFrom"
+                      class="form-control"
+                      placeholder="From..."
+                      min="0"
+                    />
+                    <input
+                      type="number"
+                      id="mileageTo"
+                      class="form-control"
+                      placeholder="To..."
+                      min="0"
+                    />
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="filter-actions">
+                    <button
+                      type="button"
+                      id="clearFilters"
+                      class="btn btn-sm clear-filters-btn"
+                    >
+                      <i class="bi bi-arrow-clockwise me-1"></i> Clear Filters
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="card-footer bg-light text-muted small">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <i class="bi bi-arrow-clockwise me-1"></i>
+              Auto-refresh every 5 minutes
+            </div>
+            <div class="refresh-countdown" id="refreshCountdown">
+              Next refresh in: <span id="countdownTimer">5:00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-primary">
+                <tr>
+                  <th class="ps-4">#</th>
+                  <th>Image</th>
+                  <th>Brand</th>
+                  <th>Model</th>
+                  <th>Year</th>
+                  <th>Volume</th>
+                  <th>Mileage</th>
+                  <th>Price</th>
+                  <th>Title / Link</th>
+                  <th>Car ID</th>
+                  <th>Status</th>
+                  <th class="text-end pe-4">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="carsTableBody">
+                <tr th:each="car, stat : ${cars}" class="table-row-actions">
+                  <td
+                    class="ps-4 fw-semibold text-muted"
+                    th:text="${stat.index + 1}"
+                  >
+                    1
+                  </td>
+
+                  <td>
+                    <img
+                      class="car-thumb shadow-sm"
+                      th:if="${!#strings.isEmpty(car.pictureUrl)}"
+                      th:src="${car.pictureUrl}"
+                      alt="Car image"
+                    />
+                    <span
+                      th:if="${#strings.isEmpty(car.pictureUrl)}"
+                      class="text-muted small"
+                      >No image</span
+                    >
+                  </td>
+
+                  <td class="text-center">
+                    <img
+                      class="brand-logo"
+                      th:src="@{/img/brands/{f}(f=${#strings.toLowerCase(#strings.trim(car.company)) + '.png'})}"
+                      th:alt="${car.company}"
+                      onerror="this.style.display='none';"
+                    />
+                    <span class="brand-text" th:text="${car.company}"
+                      >Brand</span
+                    >
+                  </td>
+
+                  <td class="fw-semibold text-primary" th:text="${car.model}">
+                    330i
+                  </td>
+                  <td th:text="${car.year}">2010</td>
+                  <td th:text="${car.volume}">2.0T</td>
+                  <td
+                    th:text="${#numbers.formatInteger(car.mileage, 0, 'DEFAULT')}"
+                  >
+                    150000
+                  </td>
+                  <td class="fw-bold text-success text-center">
+                    <!-- Price -->
+                    <div th:text="'€' + ${#numbers.formatDecimal(car.price, 1, 'COMMA', 2, 'POINT')}"></div>
+
+                    <!-- Stars -->
+                    <div class="text-warning mt-1">
+                      <span th:each="i : ${#numbers.sequence(1,5)}">
+                        <i th:if="${car.mark >= i}" class="bi bi-star-fill"></i>
+                        <i th:if="${car.mark >= i - 0.5 and car.mark < i}" class="bi bi-star-half"></i>
+                        <i th:if="${car.mark < i - 0.5}" class="bi bi-star"></i>
+                      </span>
+                    </div>
+                  </td>
+
+                  <td style="max-width: 200px">
+                    <div
+                      class="small fw-semibold"
+                      th:text="${car.descriptionDisplayName}"
+                    >
+                      Nice BMW 330i
+                    </div>
+                    <a
+                      th:if="${car.descriptionUrl}"
+                      th:href="${car.descriptionUrl}"
+                      target="_blank"
+                      rel="noopener"
+                      class="text-decoration-none small"
+                    >
+                      <i class="bi bi-box-arrow-up-right me-1"></i> View details
+                    </a>
+                  </td>
+
+                  <td>
+                    <span
+                      class="font-monospace text-muted small"
+                      th:text="${car.carId}"
+                      >SS12345</span
+                    >
+                  </td>
+
+                  <td>
+                    <span th:if="${car.isNew}" class="badge bg-success"
+                      ><i class="bi bi-star-fill me-1"></i> New</span
+                    >
+                    <span th:unless="${car.isNew}" class="badge bg-secondary"
+                      >Used</span
+                    >
+                  </td>
+
+                  <td class="text-end pe-4">
+                    <div class="action-buttons-container">
+                      <span
+                        class="comment-badge badge bg-info position-relative"
+                        th:attr="data-car-id=${car.carId}"
+                        data-bs-toggle="popover"
+                        data-bs-placement="left"
+                        data-bs-trigger="hover"
+                        data-bs-custom-class="comment-popover"
+                        style="cursor: help; display: none"
+                      >
+                        <i class="bi bi-chat-text"></i>
+                        <span class="comment-count position-absolute">0</span>
+                      </span>
+
+                      <div class="actions-dropdown">
+                        <button
+                          class="btn btn-sm btn-outline-primary actions-toggle"
+                        >
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                        <div class="actions-menu">
+                          <button
+                            class="dropdown-item mark-read"
+                            th:data-car-id="${car.carId}"
+                          >
+                            <i class="bi bi-check-circle me-2"></i>Mark as read
+                          </button>
+                          <button
+                            class="dropdown-item mark-new"
+                            th:data-car-id="${car.carId}"
+                          >
+                            <i class="bi bi-star me-2"></i>Mark as new
+                          </button>
+                          <button
+                            class="dropdown-item add-comment"
+                            th:data-car-id="${car.carId}"
+                          >
+                            <i class="bi bi-chat-left-text me-2"></i>Add/Edit
+                            comment
+                          </button>
+                        </div>
+                        <div class="comment-dialog">
+                          <div class="mb-3">
+                            <label class="form-label fw-semibold"
+                              >Comment</label
+                            >
+                            <textarea
+                              class="comment-textarea"
+                              placeholder="Enter your comment here..."
+                            ></textarea>
+                          </div>
+                          <div class="d-flex justify-content-end gap-2">
+                            <button
+                              class="btn btn-sm btn-outline-secondary comment-cancel"
+                            >
+                              Cancel
+                            </button>
+                            <button class="btn btn-sm btn-primary comment-save">
+                              Save
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(cars)}">
+                  <td colspan="12" class="text-center py-5">
+                    <div class="text-muted">
+                      <i class="bi bi-car-front display-1 d-block mb-3"></i>
+                      <h5>No Cars Found</h5>
+                      <p class="mb-0">No cars available in the inventory.</p>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div
+          class="card-footer bg-light pagination-container"
+          id="paginationContainer"
+        >
+          <nav aria-label="Car pagination">
+            <ul
+              class="pagination justify-content-center mb-0"
+              id="pagination"
+            ></ul>
+          </nav>
+        </div>
+      </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        console.log("DOM loaded, initializing filters...");
+
+        function hideLoadingIndicator() {
+          const loadingIndicator = document.getElementById("loadingIndicator");
+          if (loadingIndicator) {
+            loadingIndicator.style.opacity = "0";
+            setTimeout(() => {
+              loadingIndicator.style.display = "none";
+            }, 300);
+          }
+        }
+
+        const brandFilter = document.getElementById("brandFilter");
+        const modelFilter = document.getElementById("modelFilter");
+        const volumeFilter = document.getElementById("volumeFilter");
+        const yearFrom = document.getElementById("yearFrom");
+        const yearTo = document.getElementById("yearTo");
+        const priceFrom = document.getElementById("priceFrom");
+        const priceTo = document.getElementById("priceTo");
+        const mileageFrom = document.getElementById("mileageFrom");
+        const mileageTo = document.getElementById("mileageTo");
+        const newOnly = document.getElementById("filterNew");
+        const clearFiltersBtn = document.getElementById("clearFilters");
+
+        const REFRESH_INTERVAL_MS = 5 * 60 * 1000;
+        let refreshTimer;
+        let countdownInterval;
+
+        function clearFilters() {
+          console.log("Clearing all filters...");
+
+          brandFilter.value = "all";
+          modelFilter.value = "all";
+          volumeFilter.value = "all";
+
+          yearFrom.value = "";
+          yearTo.value = "";
+          priceFrom.value = "";
+          priceTo.value = "";
+          mileageFrom.value = "";
+          mileageTo.value = "";
+
+          newOnly.checked = false;
+
+          filterCars();
+        }
+
+        function startAutoRefreshCountdown() {
+          let timeLeft = REFRESH_INTERVAL_MS / 1000;
+          const countdownElement = document.getElementById("countdownTimer");
+
+          if (countdownInterval) {
+            clearInterval(countdownInterval);
+          }
+
+          countdownInterval = setInterval(() => {
+            timeLeft--;
+
+            if (timeLeft <= 0) {
+              clearInterval(countdownInterval);
+              countdownElement.textContent = "Refreshing...";
+              return;
+            }
+
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            countdownElement.textContent = `${minutes}:${seconds
+              .toString()
+              .padStart(2, "0")}`;
+          }, 1000);
+        }
+
+        function setupAutoRefresh() {
+          if (refreshTimer) {
+            clearTimeout(refreshTimer);
+          }
+
+          refreshTimer = setTimeout(() => {
+            console.log("Refreshing car data from server...");
+            location.reload();
+          }, REFRESH_INTERVAL_MS);
+
+          startAutoRefreshCountdown();
+        }
+
+        clearFiltersBtn.addEventListener("click", clearFilters);
+
+        const ITEMS_PER_PAGE = 20;
+        let currentPage = 1;
+        let allCarRows = [];
+        let filteredCarRows = [];
+
+        const rows = document.querySelectorAll("#carsTableBody tr");
+        allCarRows = Array.from(rows).filter(
+          (row) => !row.querySelector(".display-1")
+        );
+
+        console.log("Found", allCarRows.length, "car rows to filter");
+
+        function initializeCarStatus() {
+          allCarRows.forEach((row) => {
+            const carId = row
+              .querySelector(".mark-read")
+              .getAttribute("data-car-id");
+            const statusBadge = row.querySelector(".badge");
+
+            const savedStatus = localStorage.getItem(`car_status_${carId}`);
+            if (savedStatus) {
+              if (savedStatus === "read") {
+                statusBadge.className = "badge bg-secondary";
+                statusBadge.innerHTML =
+                  '<i class="bi bi-check-circle me-1"></i> Read';
+              } else if (savedStatus === "new") {
+                statusBadge.className = "badge bg-success";
+                statusBadge.innerHTML =
+                  '<i class="bi bi-star-fill me-1"></i> New';
+              }
+            }
+          });
+        }
+
+        function initializeActions() {
+          document.addEventListener("click", function (e) {
+            if (!e.target.closest(".actions-dropdown")) {
+              closeAllDropdownsAndDialogs();
+            }
+          });
+
+          document.querySelectorAll(".actions-toggle").forEach((toggle) => {
+            toggle.addEventListener("click", function (e) {
+              e.stopPropagation();
+              const dropdown = this.closest(".actions-dropdown");
+              const menu = dropdown.querySelector(".actions-menu");
+              const dialog = dropdown.querySelector(".comment-dialog");
+
+              closeAllDropdownsAndDialogs();
+
+              menu.classList.toggle("show");
+              dialog.classList.remove("show");
+
+              updateActionButtons(dropdown);
+            });
+          });
+
+          document.querySelectorAll(".mark-read").forEach((button) => {
+            button.addEventListener("click", function (e) {
+              e.stopPropagation();
+              const carId = this.getAttribute("data-car-id");
+              console.log(`Marking car ${carId} as read`);
+              updateCarStatus(carId, "read");
+              closeAllDropdownsAndDialogs();
+            });
+          });
+
+          document.querySelectorAll(".mark-new").forEach((button) => {
+            button.addEventListener("click", function (e) {
+              e.stopPropagation();
+              const carId = this.getAttribute("data-car-id");
+              console.log(`Marking car ${carId} as new`);
+              updateCarStatus(carId, "new");
+              closeAllDropdownsAndDialogs();
+            });
+          });
+
+          document.querySelectorAll(".add-comment").forEach((button) => {
+            button.addEventListener("click", function (e) {
+              e.stopPropagation();
+              const dropdown = this.closest(".actions-dropdown");
+              const menu = dropdown.querySelector(".actions-menu");
+              const dialog = dropdown.querySelector(".comment-dialog");
+              const carId = this.getAttribute("data-car-id");
+
+              dialog.setAttribute("data-car-id", carId);
+
+              const existingComment = getLatestComment(carId);
+              const textarea = dialog.querySelector(".comment-textarea");
+              textarea.value = existingComment || "";
+
+              menu.classList.remove("show");
+              dialog.classList.add("show");
+            });
+          });
+
+          document.querySelectorAll(".comment-cancel").forEach((button) => {
+            button.addEventListener("click", function (e) {
+              e.stopPropagation();
+              const dialog = this.closest(".comment-dialog");
+              dialog.classList.remove("show");
+            });
+          });
+
+          document.querySelectorAll(".comment-save").forEach((button) => {
+            button.addEventListener("click", function (e) {
+              e.stopPropagation();
+              const dialog = this.closest(".comment-dialog");
+              const carId = dialog.getAttribute("data-car-id");
+              const comment = dialog.querySelector(".comment-textarea").value;
+
+              console.log(`Saving comment for car ${carId}:`, comment);
+              saveComment(carId, comment);
+              dialog.classList.remove("show");
+            });
+          });
+
+          initializeCommentPopovers();
+        }
+
+        function getLatestComment(carId) {
+          const comments =
+            JSON.parse(localStorage.getItem(`comments_${carId}`)) || [];
+          if (comments.length > 0) {
+            return comments[comments.length - 1].text;
+          }
+          return "";
+        }
+
+        function updateActionButtons(dropdown) {
+          const row = dropdown.closest("tr");
+          const statusBadge = row.querySelector(".badge");
+          const isNew =
+            statusBadge && statusBadge.classList.contains("bg-success");
+
+          const markReadBtn = dropdown.querySelector(".mark-read");
+          const markNewBtn = dropdown.querySelector(".mark-new");
+
+          markReadBtn.disabled = !isNew;
+          markNewBtn.disabled = isNew;
+        }
+
+        function updateCarStatus(carId, status) {
+          const row = document
+            .querySelector(`.mark-read[data-car-id="${carId}"]`)
+            .closest("tr");
+          const statusBadge = row.querySelector(".badge");
+
+          if (status === "read") {
+            statusBadge.className = "badge bg-secondary";
+            statusBadge.innerHTML =
+              '<i class="bi bi-check-circle me-1"></i> Read';
+          } else if (status === "new") {
+            statusBadge.className = "badge bg-success";
+            statusBadge.innerHTML = '<i class="bi bi-star-fill me-1"></i> New';
+          }
+
+          localStorage.setItem(`car_status_${carId}`, status);
+        }
+
+        function saveComment(carId, comment) {
+          if (!comment.trim()) {
+            localStorage.removeItem(`comments_${carId}`);
+            updateCommentBadge(carId);
+            return;
+          }
+
+          const commentData = [
+            {
+              text: comment.trim(),
+              timestamp: new Date().toISOString(),
+            },
+          ];
+
+          localStorage.setItem(
+            `comments_${carId}`,
+            JSON.stringify(commentData)
+          );
+
+          updateCommentBadge(carId);
+
+          console.log(`Comment saved for car ${carId}:`, comment);
+        }
+
+        function updateCommentBadge(carId) {
+          const commentBadge = document.querySelector(
+            `.comment-badge[data-car-id="${carId}"]`
+          );
+          if (!commentBadge) return;
+
+          const comments =
+            JSON.parse(localStorage.getItem(`comments_${carId}`)) || [];
+          const commentCount = commentBadge.querySelector(".comment-count");
+
+          if (comments.length > 0) {
+            commentCount.textContent = comments.length;
+            commentBadge.style.display = "inline-flex";
+
+            updatePopoverContent(carId, commentBadge);
+          } else {
+            commentBadge.style.display = "none";
+          }
+        }
+
+        function updatePopoverContent(carId, commentBadge) {
+          const comments =
+            JSON.parse(localStorage.getItem(`comments_${carId}`)) || [];
+
+          let popoverContent = "";
+
+          if (comments.length === 0) {
+            popoverContent = '<div class="no-comments">No comments yet</div>';
+          } else {
+            popoverContent = comments
+              .map(
+                (comment) => `
+              <div class="comment-item">
+                <div class="comment-timestamp">
+                  <i class="bi bi-clock me-1"></i>
+                  ${new Date(comment.timestamp).toLocaleString()}
+                </div>
+                <div class="comment-text">${comment.text}</div>
+              </div>
+            `
+              )
+              .join("");
+          }
+
+          commentBadge.setAttribute("data-bs-content", popoverContent);
+
+          const popover = bootstrap.Popover.getInstance(commentBadge);
+          if (popover) {
+            popover.dispose();
+          }
+
+          new bootstrap.Popover(commentBadge, {
+            trigger: "hover",
+            placement: "left",
+            customClass: "comment-popover",
+            html: true,
+            sanitize: false,
+          });
+        }
+
+        function initializeCommentPopovers() {
+          document.querySelectorAll(".comment-badge").forEach((badge) => {
+            const carId = badge.getAttribute("data-car-id");
+            updatePopoverContent(carId, badge);
+          });
+        }
+
+        function initializeCommentBadges() {
+          document.querySelectorAll(".comment-badge").forEach((badge) => {
+            const carId = badge.getAttribute("data-car-id");
+            updateCommentBadge(carId);
+          });
+        }
+
+        function closeAllDropdownsAndDialogs() {
+          document.querySelectorAll(".actions-menu").forEach((menu) => {
+            menu.classList.remove("show");
+          });
+          document.querySelectorAll(".comment-dialog").forEach((dialog) => {
+            dialog.classList.remove("show");
+          });
+        }
+
+        function initializeDropdowns() {
+          const brands = new Set();
+          const models = new Set();
+          const volumes = new Set();
+
+          allCarRows.forEach((row) => {
+            const cells = row.querySelectorAll("td");
+            if (cells.length > 5) {
+              const brandCell = cells[2];
+              const brandSpan = brandCell.querySelector(".brand-text");
+
+              let brandText = "";
+              if (brandSpan) {
+                brandText = brandSpan.textContent || "";
+              } else {
+                brandText = brandCell.textContent || "";
+                brandText = brandText.replace(/\s+/g, " ").trim();
+              }
+
+              if (brandText.trim()) {
+                brands.add(brandText.trim());
+              }
+
+              const model = cells[3].textContent.trim();
+              if (model) {
+                models.add(model);
+              }
+
+              const volume = cells[5].textContent.trim();
+              if (volume) {
+                volumes.add(volume);
+              }
+            }
+          });
+
+          brandFilter.innerHTML = '<option value="all">All Brands</option>';
+          modelFilter.innerHTML =
+            '<option value="all" selected>All Models</option>';
+          volumeFilter.innerHTML = '<option value="all" selected>All</option>';
+
+          const sortedBrands = Array.from(brands).sort();
+          sortedBrands.forEach((brand) => {
+            const option = document.createElement("option");
+            option.value = brand.toLowerCase();
+            option.textContent = brand;
+            brandFilter.appendChild(option);
+          });
+
+          const bmwOption = Array.from(brandFilter.options).find(
+            (opt) =>
+              opt.textContent.toLowerCase().includes("bmw") ||
+              opt.value.includes("bmw")
+          );
+          if (bmwOption) {
+            bmwOption.selected = true;
+          } else if (sortedBrands.length > 0) {
+            brandFilter.options[1].selected = true;
+          }
+
+          const sortedModels = Array.from(models).sort();
+          sortedModels.forEach((model) => {
+            const option = document.createElement("option");
+            option.value = model.toLowerCase();
+            option.textContent = model;
+            modelFilter.appendChild(option);
+          });
+
+          const sortedVolumes = Array.from(volumes).sort();
+          sortedVolumes.forEach((volume) => {
+            const option = document.createElement("option");
+            option.value = volume.toLowerCase();
+            option.textContent = volume;
+            volumeFilter.appendChild(option);
+          });
+
+          console.log("Initialized dropdowns:", {
+            brands: sortedBrands,
+            models: sortedModels,
+            volumes: sortedVolumes,
+          });
+        }
+
+        function extractBrandFromRow(row) {
+          const cells = row.querySelectorAll("td");
+          if (cells.length < 3) return "";
+
+          const brandCell = cells[2];
+          const brandSpan = brandCell.querySelector(".brand-text");
+
+          let brandText = "";
+          if (brandSpan) {
+            brandText = brandSpan.textContent || "";
+          } else {
+            brandText = brandCell.textContent || "";
+            brandText = brandText.replace(/\s+/g, " ").trim();
+          }
+
+          return brandText.trim().toLowerCase();
+        }
+
+        function extractPrice(str) {
+          if (!str) return 0;
+
+          let cleaned = str.replace("€", "").trim();
+
+          console.log("Price string to parse:", str, "->", cleaned);
+
+          if (cleaned.includes(",") && cleaned.includes(".")) {
+            const commaPos = cleaned.indexOf(",");
+            const dotPos = cleaned.indexOf(".");
+
+            if (commaPos > dotPos) {
+              cleaned = cleaned.replace(/\./g, "").replace(",", ".");
+            } else {
+              cleaned = cleaned.replace(/,/g, "");
+            }
+          } else if (cleaned.includes(",")) {
+            const parts = cleaned.split(",");
+            if (parts[1] && parts[1].length === 2) {
+              cleaned = cleaned.replace(",", ".");
+            } else {
+              cleaned = cleaned.replace(/,/g, "");
+            }
+          }
+
+          const result = parseFloat(cleaned) || 0;
+          console.log("Parsed price:", str, "->", cleaned, "->", result);
+          return result;
+        }
+
+        function filterCars() {
+          console.log("Applying filters...");
+
+          const selectedBrand = brandFilter.value.toLowerCase();
+          const selectedModel = modelFilter.value.toLowerCase();
+          const selectedVolume = volumeFilter.value.toLowerCase();
+          const onlyNew = newOnly.checked;
+
+          const yFrom = parseInt(yearFrom.value) || 0;
+          const yTo = parseInt(yearTo.value) || 9999;
+          const pFrom = parseFloat(priceFrom.value) || 0;
+          const pTo = parseFloat(priceTo.value) || Infinity;
+          const mFrom = parseInt(mileageFrom.value) || 0;
+          const mTo = parseInt(mileageTo.value) || Infinity;
+
+          console.log("Filter criteria:", {
+            selectedBrand,
+            selectedModel,
+            selectedVolume,
+            onlyNew,
+            yearRange: [yFrom, yTo],
+            priceRange: [pFrom, pTo],
+            mileageRange: [mFrom, mTo],
+          });
+
+          filteredCarRows = [];
+
+          allCarRows.forEach((row, index) => {
+            const cells = row.querySelectorAll("td");
+            if (cells.length < 10) {
+              console.log("Row", index, "has insufficient cells");
+              return;
+            }
+
+            try {
+              const brand = extractBrandFromRow(row);
+              const model = (cells[3].textContent || "").trim().toLowerCase();
+              const year = parseInt(cells[4].textContent) || 0;
+              const volume = (cells[5].textContent || "").trim().toLowerCase();
+              const mileageText = cells[6].textContent || "";
+              const mileage = parseInt(mileageText.replace(/\D/g, "")) || 0;
+              const priceText = cells[7].textContent || "";
+              const price = extractPrice(priceText);
+
+              const statusBadge = cells[10].querySelector(".badge");
+              const isNew =
+                statusBadge && statusBadge.classList.contains("bg-success");
+
+              console.log(
+                `Row ${index}: Brand="${brand}", Model="${model}", Price="${priceText}" -> ${price}`
+              );
+
+              const matchesBrand =
+                selectedBrand === "all" || brand === selectedBrand;
+              const matchesModel =
+                selectedModel === "all" || model === selectedModel;
+              const matchesVolume =
+                selectedVolume === "all" || volume === selectedVolume;
+              const matchesYear =
+                (!yearFrom.value || year >= yFrom) &&
+                (!yearTo.value || year <= yTo);
+              const matchesPrice =
+                (!priceFrom.value || price >= pFrom) &&
+                (!priceTo.value || price <= pTo);
+              const matchesMileage =
+                (!mileageFrom.value || mileage >= mFrom) &&
+                (!mileageTo.value || mileage <= mTo);
+              const matchesNew = !onlyNew || isNew;
+
+              const visible =
+                matchesBrand &&
+                matchesModel &&
+                matchesVolume &&
+                matchesYear &&
+                matchesPrice &&
+                matchesMileage &&
+                matchesNew;
+
+              if (visible) {
+                filteredCarRows.push(row);
+                console.log(`Row ${index} PASSED filters`);
+              } else {
+                console.log(`Row ${index} FAILED filters`);
+              }
+            } catch (error) {
+              console.error("Error processing row", index, error);
+            }
+          });
+
+          console.log(
+            "Filtering complete. Visible cars:",
+            filteredCarRows.length
+          );
+          currentPage = 1;
+          updatePagination();
+          displayCurrentPage();
+        }
+
+        function updatePagination() {
+          const totalPages = Math.ceil(filteredCarRows.length / ITEMS_PER_PAGE);
+          const pagination = document.getElementById("pagination");
+          const container = document.getElementById("paginationContainer");
+
+          if (totalPages <= 1) {
+            container.style.display = "none";
+            return;
+          }
+
+          container.style.display = "block";
+          pagination.innerHTML = "";
+
+          const prevLi = document.createElement("li");
+          prevLi.className = `page-item ${currentPage === 1 ? "disabled" : ""}`;
+          prevLi.innerHTML = `<a class="page-link" href="#" data-page="${
+            currentPage - 1
+          }">Previous</a>`;
+          pagination.appendChild(prevLi);
+
+          const maxPages = 5;
+          let startPage = Math.max(1, currentPage - Math.floor(maxPages / 2));
+          let endPage = Math.min(totalPages, startPage + maxPages - 1);
+
+          if (endPage - startPage + 1 < maxPages) {
+            startPage = Math.max(1, endPage - maxPages + 1);
+          }
+
+          for (let i = startPage; i <= endPage; i++) {
+            const li = document.createElement("li");
+            li.className = `page-item ${i === currentPage ? "active" : ""}`;
+            li.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
+            pagination.appendChild(li);
+          }
+
+          const nextLi = document.createElement("li");
+          nextLi.className = `page-item ${
+            currentPage === totalPages ? "disabled" : ""
+          }`;
+          nextLi.innerHTML = `<a class="page-link" href="#" data-page="${
+            currentPage + 1
+          }">Next</a>`;
+          pagination.appendChild(nextLi);
+
+          pagination.querySelectorAll(".page-link").forEach((link) => {
+            link.addEventListener("click", function (e) {
+              e.preventDefault();
+              const page = parseInt(this.getAttribute("data-page"));
+              if (page >= 1 && page <= totalPages && page !== currentPage) {
+                currentPage = page;
+                updatePagination();
+                displayCurrentPage();
+              }
+            });
+          });
+        }
+
+        function displayCurrentPage() {
+          allCarRows.forEach((row) => (row.style.display = "none"));
+
+          const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+          const endIndex = Math.min(
+            startIndex + ITEMS_PER_PAGE,
+            filteredCarRows.length
+          );
+
+          for (let i = startIndex; i < endIndex; i++) {
+            filteredCarRows[i].style.display = "";
+          }
+
+          const emptyStateRow = document.querySelector(
+            "#carsTableBody tr:has(.display-1)"
+          );
+          if (emptyStateRow) {
+            emptyStateRow.style.display =
+              filteredCarRows.length === 0 ? "" : "none";
+          }
+
+          console.log(
+            `Displaying page ${currentPage}: items ${
+              startIndex + 1
+            }-${endIndex} of ${filteredCarRows.length}`
+          );
+        }
+
+        setTimeout(() => {
+          initializeDropdowns();
+          initializeActions();
+          initializeCommentBadges();
+          initializeCarStatus();
+          filteredCarRows = [...allCarRows];
+          updatePagination();
+          displayCurrentPage();
+
+          document
+            .getElementById("filterForm")
+            .addEventListener("input", filterCars);
+          document
+            .getElementById("filterForm")
+            .addEventListener("change", filterCars);
+
+          setupAutoRefresh();
+          hideLoadingIndicator();
+        }, 100);
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>User Management - Perekupi.lv</title>
+
+    <!--Bootstrap CSS-->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!--Bootstrap Icons-->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+
+    <!--Some Custom CSS - Midnight Navy Theme-->
+    <style>
+      :root {
+        --bs-primary: #1e40af;
+        --bs-primary-rgb: 30, 64, 175;
+      }
+      .btn-primary {
+        --bs-btn-bg: #1e40af;
+        --bs-btn-border-color: #1e40af;
+        --bs-btn-hover-bg: #1e3a8a;
+        --bs-btn-hover-border-color: #1e3a8a;
+      }
+      .table-primary {
+        --bs-table-bg: #1e40af;
+        --bs-table-color: #fff;
+      }
+      .bg-primary-gradient {
+        background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <!-- Header -->
+    <header class="bg-white border-bottom shadow-sm mb-4">
+      <div class="container py-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <h1 class="h4 mb-0 text-primary fw-bold">
+            <i class="bi bi-people-fill me-2"></i>
+            User Management
+          </h1>
+          <a href="/" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-house-fill me-1"></i>
+            Back to Home
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <div class="container py-4">
+      <!-- Add User Card -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-primary-gradient text-white">
+          <h5 class="mb-0">
+            <i class="bi bi-person-plus-fill me-2"></i>
+            Add New User
+          </h5>
+        </div>
+        <div class="card-body p-4">
+          <form th:action="@{/users/add}" method="post" class="row g-3">
+            <!-- Name Input -->
+            <div class="col-md-4">
+              <label for="name" class="form-label fw-semibold">
+                <i class="bi bi-person text-primary me-1"></i>
+                Name
+              </label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                class="form-control form-control-lg"
+                placeholder="e.g., admin"
+                required
+              />
+            </div>
+
+            <!-- Password Input -->
+            <div class="col-md-4">
+              <label for="password" class="form-label fw-semibold">
+                <i class="bi bi-shield-lock text-primary me-1"></i>
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                class="form-control form-control-lg"
+                placeholder="••••••••"
+                required
+                autocomplete="new-password"
+              />
+            </div>
+
+            <!-- Company Input -->
+            <div class="col-md-4">
+              <label for="company" class="form-label fw-semibold">
+                <i class="bi bi-building text-primary me-1"></i>
+                Company
+              </label>
+              <input
+                id="company"
+                name="company"
+                type="text"
+                class="form-control form-control-lg"
+                placeholder="e.g., Perekupi"
+              />
+            </div>
+
+            <!-- CSRF Token -->
+            <input
+              type="hidden"
+              th:if="${_csrf != null}"
+              th:name="${_csrf.parameterName}"
+              th:value="${_csrf.token}"
+            />
+
+            <!-- Submit Button -->
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary btn-lg px-5">
+                <i class="bi bi-plus-circle me-2"></i>
+                Add User
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Users Table Card -->
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white border-bottom">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 text-primary fw-bold">
+              <i class="bi bi-table me-2"></i>
+              Users List
+            </h5>
+            <span
+              class="badge bg-primary rounded-pill"
+              th:text="${#lists.size(us)} + ' Total'"
+              >0 Total</span
+            >
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-primary">
+                <tr>
+                  <th scope="col" class="ps-4">#</th>
+                  <th scope="col">
+                    <i class="bi bi-person me-1"></i>
+                    Name
+                  </th>
+                  <th scope="col">
+                    <i class="bi bi-key me-1"></i>
+                    Password
+                  </th>
+                  <th scope="col">
+                    <i class="bi bi-building me-1"></i>
+                    Company
+                  </th>
+                  <th scope="col" class="text-end pe-4">
+                    <i class="bi bi-gear me-1"></i>
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="user, stat : ${us}">
+                  <td
+                    class="ps-4 fw-semibold text-muted"
+                    th:text="${stat.index + 1}"
+                  >
+                    1
+                  </td>
+                  <td>
+                    <span
+                      class="badge bg-light text-dark border"
+                      th:text="${user.name}"
+                      >Name</span
+                    >
+                  </td>
+                  <td>
+                    <span
+                      class="font-monospace text-muted small"
+                      th:text="${user.password}"
+                      >••••••••</span
+                    >
+                  </td>
+                  <td th:text="${user.company}">Company</td>
+                  <td class="text-end pe-4">
+                    <form
+                      th:action="@{/users/delete-by-name}"
+                      method="post"
+                      class="d-inline"
+                    >
+                      <input
+                        type="hidden"
+                        name="name"
+                        th:value="${user.name}"
+                      />
+                      <input
+                        type="hidden"
+                        th:if="${_csrf}"
+                        th:name="${_csrf.parameterName}"
+                        th:value="${_csrf.token}"
+                      />
+                      <button
+                        type="submit"
+                        class="btn btn-sm btn-outline-danger"
+                        onclick="return confirm('Delete ALL users named \'' + /*[[${user.name}]]*/'User' + '\'?');"
+                      >
+                        <i class="bi bi-trash me-1"></i>
+                        Delete
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+
+                <!-- Empty State -->
+                <tr th:if="${#lists.isEmpty(us)}">
+                  <td colspan="5" class="text-center py-5">
+                    <div class="text-muted">
+                      <i class="bi bi-inbox display-1 d-block mb-3"></i>
+                      <h5>No Users Found</h5>
+                      <p class="mb-0">
+                        Add your first user using the form above.
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Table Footer with Count -->
+        <div
+          class="card-footer bg-light text-muted text-center small"
+          th:if="${!#lists.isEmpty(us)}"
+        >
+          Showing <span th:text="${#lists.size(us)}">0</span> user(s)
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+      <div
+        id="successToast"
+        class="toast align-items-center text-bg-success border-0"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="d-flex">
+          <div class="toast-body">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <strong>Success!</strong> User added successfully.
+          </div>
+          <button
+            type="button"
+            class="btn-close btn-close-white me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Toast Notification Script -->
+    <script>
+      // Show toast on successful user addition
+      window.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get("saved") === "1") {
+          const toastEl = document.getElementById("successToast");
+          const toast = new bootstrap.Toast(toastEl);
+          toast.show();
+        }
+      });
+
+      // Highlight newly added row (last row)
+      document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get("saved") === "1") {
+          const tableRows = document.querySelectorAll("tbody tr");
+          if (tableRows.length > 0) {
+            const lastRow = tableRows[tableRows.length - 1];
+            if (!lastRow.querySelector("td[colspan]")) {
+              // Not the empty state row
+              lastRow.classList.add("table-success");
+              setTimeout(function () {
+                lastRow.classList.remove("table-success");
+              }, 2000);
+            }
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

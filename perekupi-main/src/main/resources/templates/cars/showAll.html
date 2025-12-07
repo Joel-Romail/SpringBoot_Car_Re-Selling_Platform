@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Car Management - Perekupi.lv</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  
+  <!--SomeCustom CSS - Midnight Navy Theme -->
+  <style>
+    :root {
+      --bs-primary: #1e40af;
+      --bs-primary-rgb: 30, 64, 175;
+    }
+    .btn-primary {
+      --bs-btn-bg: #1e40af;
+      --bs-btn-border-color: #1e40af;
+      --bs-btn-hover-bg: #1e3a8a;
+      --bs-btn-hover-border-color: #1e3a8a;
+    }
+    .table-primary {
+      --bs-table-bg: #1e40af;
+      --bs-table-color: #fff;
+    }
+    .bg-primary-gradient {
+      background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+    }
+    .car-thumb {
+      width: 100px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 0.5rem;
+      border: 2px solid #e2e8f0;
+    }
+  </style>
+</head>
+<body class="bg-light">
+
+  <!-- The Header -->
+  <header class="bg-white border-bottom shadow-sm mb-4">
+    <div class="container py-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <h1 class="h4 mb-0 text-primary fw-bold">
+          <i class="bi bi-car-front-fill me-2"></i>
+          Car Management
+        </h1>
+        <a href="/" class="btn btn-outline-primary btn-sm">
+          <i class="bi bi-house-fill me-1"></i>
+          Back to Home
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container py-4">
+    
+    <!--Success Alert-->
+    <div th:if="${param.saved}" class="alert alert-success alert-dismissible fade show" role="alert">
+      <i class="bi bi-check-circle-fill me-2"></i>
+      <strong>Success!</strong> Car saved successfully.
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Info Alert -->
+    <div th:if="${msg}" class="alert alert-info alert-dismissible fade show" role="alert">
+      <i class="bi bi-info-circle-fill me-2"></i>
+      <span th:text="${msg}">Message</span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Error Alert -->
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      <span th:text="${error}">Error</span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Add Car Card -->
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-header bg-primary-gradient text-white">
+        <h5 class="mb-0">
+          <i class="bi bi-plus-circle-fill me-2"></i>
+          Add New Car
+        </h5>
+      </div>
+      <div class="card-body p-4">
+        <form th:action="@{/cars/add}" method="post" class="row g-3">
+          
+          <!-- Row 1: Basic Info -->
+          <div class="col-md-3">
+            <label class="form-label fw-semibold" for="company">
+              <i class="bi bi-building text-primary me-1"></i>
+              Company
+            </label>
+            <input class="form-control" id="company" name="company" placeholder="BMW / Audi" required>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label fw-semibold" for="carId">
+              <i class="bi bi-tag text-primary me-1"></i>
+              Car ID
+            </label>
+            <input class="form-control" id="carId" name="carId" placeholder="External ID" required>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label fw-semibold" for="model">
+              <i class="bi bi-car-front text-primary me-1"></i>
+              Model
+            </label>
+            <input class="form-control" id="model" name="model" placeholder="330i / A4" required>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label fw-semibold" for="year">
+              <i class="bi bi-calendar text-primary me-1"></i>
+              Year
+            </label>
+            <input class="form-control" id="year" name="year" type="number" placeholder="2010">
+          </div>
+
+          <!-- Row 2: Specifications -->
+          <div class="col-md-3">
+            <label class="form-label fw-semibold" for="volume">
+              <i class="bi bi-speedometer text-primary me-1"></i>
+              Volume
+            </label>
+            <input class="form-control" id="volume" name="volume" placeholder="2.0T / 3.0D">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label fw-semibold" for="mileage">
+              <i class="bi bi-odometer text-primary me-1"></i>
+              Mileage
+            </label>
+            <input class="form-control" id="mileage" name="mileage" type="number" min="0" step="1" placeholder="150000">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label fw-semibold" for="price">
+              <i class="bi bi-currency-euro text-primary me-1"></i>
+              Price
+            </label>
+            <input class="form-control" id="price" name="price" type="number" min="0" step="0.01" placeholder="8999.99">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label fw-semibold d-block">
+              <i class="bi bi-star text-primary me-1"></i>
+              Status
+            </label>
+            <div class="form-check form-switch mt-2">
+              <input class="form-check-input" id="isNew" name="new" type="checkbox" value="true" role="switch">
+              <label class="form-check-label" for="isNew">Mark as New</label>
+            </div>
+          </div>
+
+          <!-- Row 3: URLs and Description -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" for="pictureUrl">
+              <i class="bi bi-image text-primary me-1"></i>
+              Picture URL
+            </label>
+            <input class="form-control" id="pictureUrl" name="pictureUrl" type="url" placeholder="https://...">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label fw-semibold" for="descriptionDisplayName">
+              <i class="bi bi-file-text text-primary me-1"></i>
+              Title
+            </label>
+            <input class="form-control" id="descriptionDisplayName" name="descriptionDisplayName" placeholder="Nice BMW 330i">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label fw-semibold" for="descriptionUrl">
+              <i class="bi bi-link text-primary me-1"></i>
+              Details URL
+            </label>
+            <input class="form-control" id="descriptionUrl" name="descriptionUrl" type="url" placeholder="https://...">
+          </div>
+
+          <!-- CSRF Token -->
+          <input type="hidden" th:if="${_csrf}"
+                 th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+          <!--Submit Button -->
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary btn-lg px-5">
+              <i class="bi bi-plus-circle me-2"></i>
+              Add Car
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+     <!-- Upload JSON Form -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="h5 mb-3">Import cars from JSON</h2>
+      <form th:action="@{/cars/upload-json}" method="post" enctype="multipart/form-data" class="row g-3">
+        <div class="col-md-8">
+          <input class="form-control" type="file" name="file" accept="application/json" required>
+        </div>
+        <div class="col-md-4 d-flex gap-2">
+          <button class="btn btn-outline-primary">Upload</button>
+          <button class="btn btn-outline-secondary" type="button"
+                  onclick="downloadSample()">Download sample</button>
+        </div>
+        <input type="hidden" th:if="${_csrf}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+      </form>
+      <script>
+        function downloadSample() {
+          const sample = [{
+            "company": "BMW",
+            "carId": "SS12345",
+            "model": "330i",
+            "year": 2010,
+            "volume": "3.0",
+            "mileage": 150000,
+            "price": 8999.99,
+            "descriptionDisplayName": "Nice BMW 330i",
+            "descriptionUrl": "https://example.com/bmw-330i",
+            "pictureUrl": "https://i.ss.lv/gallery/8/1413/353071/70614100.th2.jpg",
+            "isNew": true
+          }];
+          const blob = new Blob([JSON.stringify(sample, null, 2)], {type: "application/json"});
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = "cars-sample.json";
+          a.click();
+          URL.revokeObjectURL(a.href);
+        }
+      </script>
+    </div>
+  </div>
+
+  <div class="card shadow-sm my-4">
+    <div class="card-body">
+      <h2 class="h6">Import cars (chunked JSON)</h2>
+      <input id="jsonFile" type="file" accept="application/json" class="form-control mb-2">
+      <div class="d-flex gap-2">
+        <input id="chunkSize" type="number" class="form-control" value="1000" style="max-width:140px">
+        <button class="btn btn-outline-primary" onclick="sendInChunks()">Upload in chunks</button>
+      </div>
+      <div id="chunkStatus" class="small text-muted mt-2"></div>
+    </div>
+  </div>
+
+  <script>
+  async function sendInChunks() {
+    const file = document.getElementById('jsonFile').files[0];
+    const status = document.getElementById('chunkStatus');
+    const chunkSize = parseInt(document.getElementById('chunkSize').value || '1000', 10);
+
+    if (!file) { alert('Select a JSON file'); return; }
+
+    // CSRF (if enabled)
+    const csrf = document.querySelector('meta[name="_csrf"]')?.content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+
+    let data;
+    try { data = JSON.parse(await file.text()); } 
+    catch(e) { alert('Invalid JSON: ' + e); return; }
+    if (!Array.isArray(data)) data = [data];
+
+    // keep each request small (< ~5–8MB). We guard by count and size.
+    for (let i = 0; i < data.length; i += chunkSize) {
+      const chunk = data.slice(i, i + chunkSize);
+      const body = JSON.stringify(chunk);
+      const bytes = new Blob([body]).size;
+      if (bytes > 8 * 1024 * 1024) { // 8MB guardrail
+        alert('Chunk too large (' + bytes + ' bytes). Lower chunk size.');
+        return;
+      }
+
+      const headers = {'Content-Type': 'application/json'};
+      if (csrf && csrfHeader) headers[csrfHeader] = csrf;
+
+      status.textContent = `Uploading chunk ${Math.floor(i/chunkSize)+1} of ${Math.ceil(data.length/chunkSize)}...`;
+      const res = await fetch('/cars/import', { method: 'POST', headers, body });
+      if (!res.ok) {
+        const msg = await res.text();
+        alert('Upload failed: ' + res.status + ' ' + msg);
+        status.textContent = 'Failed.';
+        return;
+      }
+      const j = await res.json();
+      console.log('Chunk result:', j);
+    }
+    status.textContent = 'All chunks uploaded successfully.';
+    // optional: reload to see new cars
+    // location.reload();
+  }
+  </script>
+
+
+
+
+    <!-- Cars Table Card -->
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-white border-bottom">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="mb-0 text-primary fw-bold">
+            <i class="bi bi-table me-2"></i>
+            Cars Inventory
+          </h5>
+          <span class="badge bg-primary rounded-pill" th:text="${#lists.size(cars)} + ' Total'">0 Total</span>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-primary">
+              <tr>
+                <th scope="col" class="ps-4">#</th>
+                <th scope="col">Image</th>
+                <th scope="col">Company</th>
+                <th scope="col">Model</th>
+                <th scope="col">Year</th>
+                <th scope="col">Volume</th>
+                <th scope="col">Mileage</th>
+                <th scope="col">Price</th>
+                <th scope="col">Title / Link</th>
+                <th scope="col">Car ID</th>
+                <th scope="col">Status</th>
+                <th scope="col" class="text-end pe-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="car, stat : ${cars} ?: ${cs}">
+                <td class="ps-4 fw-semibold text-muted" th:text="${stat.index + 1}">1</td>
+
+                <td>
+                  <img class="car-thumb shadow-sm"
+                       th:if="${!#strings.isEmpty(car.pictureUrl)}"
+                       th:src="${car.pictureUrl}" 
+                       alt="Car thumbnail">
+                  <span th:if="${#strings.isEmpty(car.pictureUrl)}" class="text-muted small">No image</span>
+                </td>
+
+                <td>
+                  <span class="badge bg-light text-dark border" th:text="${car.company}">BMW</span>
+                </td>
+                <td class="fw-semibold" th:text="${car.model}">330i</td>
+                <td th:text="${car.year}">2010</td>
+                <td th:text="${car.volume}">2.0T</td>
+                <td th:text="${#numbers.formatInteger(car.mileage, 0, 'DEFAULT')}">150000</td>
+                <td class="fw-bold text-success" th:text="'€' + ${#numbers.formatDecimal(car.price, 1, 2)}">€8999.99</td>
+
+                <td style="max-width: 200px;">
+                  <div class="small" th:text="${car.descriptionDisplayName}">Nice BMW 330i</div>
+                  <a th:if="${car.descriptionUrl}" 
+                     th:href="${car.descriptionUrl}" 
+                     target="_blank" 
+                     rel="noopener"
+                     class="text-decoration-none small">
+                    <i class="bi bi-box-arrow-up-right me-1"></i>
+                    View details
+                  </a>
+                </td>
+
+                <td>
+                  <span class="font-monospace text-muted small" th:text="${car.carId}">SS12345</span>
+                </td>
+
+                <td>
+                  <span th:if="${car.isNew}" class="badge bg-success">
+                    <i class="bi bi-star-fill me-1"></i>
+                    New
+                  </span>
+                  <span th:unless="${car.isNew}" class="badge bg-secondary">Used</span>
+                </td>
+
+                <td class="text-end pe-4">
+                  <form th:action="@{/cars/{uid}/delete(uid=${car.uid})}" method="post" class="d-inline">
+                    <input type="hidden" th:if="${_csrf}" 
+                           th:name="${_csrf.parameterName}" 
+                           th:value="${_csrf.token}">
+                    <button type="submit"
+                            class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('Delete this car?');">
+                      <i class="bi bi-trash me-1"></i>
+                      Delete
+                    </button>
+                  </form>
+                </td>
+              </tr>
+
+              <!-- Empty State -->
+              <tr th:if="${#lists.isEmpty(cars) and #lists.isEmpty(cs)}">
+                <td colspan="12" class="text-center py-5">
+                  <div class="text-muted">
+                    <i class="bi bi-car-front display-1 d-block mb-3"></i>
+                    <h5>No Cars Found</h5>
+                    <p class="mb-0">Add your first car using the form above.</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Table Footer -->
+      <div class="card-footer bg-light text-muted text-center small" th:if="${!#lists.isEmpty(cars)}">
+        Showing <span th:text="${#lists.size(cars)}">0</span> car(s)
+      </div>
+    </div>
+
+  </div>
+
+
+
+  <!--Toast Notification-->
+  <div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          <i class="bi bi-check-circle-fill me-2"></i>
+          <strong>Success!</strong> Car added successfully.
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!--Toast Notification Function-->
+  <script>
+    // Show toast on successful car addition
+    window.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('saved') === '1') {
+        const toastEl = document.getElementById('successToast');
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+      }
+    });
+
+    // Highlight newly added row for better UX (last row)
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('saved') === '1') {
+        const tableRows = document.querySelectorAll('tbody tr');
+        if (tableRows.length > 0) {
+          const lastRow = tableRows[tableRows.length - 1];
+          if (!lastRow.querySelector('td[colspan]')) { // Not the empty state row
+            lastRow.classList.add('table-success');
+            setTimeout(function() {
+              lastRow.classList.remove('table-success');
+            }, 2000);
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
